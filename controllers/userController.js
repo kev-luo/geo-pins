@@ -29,7 +29,7 @@ const verifyAuthToken = async(token) => {
 const checkIfUserExists = async(email) => {
   // exec() allows this to return a promise
   // https://mongoosejs.com/docs/promises.html#should-you-use-exec-with-await?
-  await User.findOne({ email: email }).exec()
+  return await User.findOne({ email: email }).exec()
 }
 
 const createNewUser = (googleUser) => {

@@ -28,4 +28,6 @@ Thank you to Reed Barger who provided the starter template for this application.
   <!-- our 'me' query is wrapped in a higher order function which checks if the login was successful.  -->
   <!-- if there is no currentUser in the context object then we throw an authentication error -->
   <!-- if there is a currentUser, the resolver returns the currentUser from the context object and is sent back to our Login Component with the currentUser information based on what we requested in our query -->
+
+<!-- store user info on front end -->
   

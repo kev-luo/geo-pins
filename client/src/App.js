@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useContext, useReducer } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import Home from './pages/Home';
 import Splash from './pages/Splash';
+import UserContext from './utils/UserContext';
+import reducer from './utils/reducer';
 
 function App() {
+  const initialState = useContext(UserContext);
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   return (
     <Router>
       <Switch>

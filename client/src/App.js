@@ -1,10 +1,17 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+import Home from './pages/Home';
+import Splash from './pages/Splash';
 
 function App() {
   return (
-    <div className="App">
-
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path='/' component={ Home } />
+        <Route exact path='/login' component={ Splash } />
+      </Switch>
+    </Router>
   );
 }
 

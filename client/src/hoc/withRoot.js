@@ -21,3 +21,14 @@ const theme = createMuiTheme({
     useNextVariants: true,
   }
 })
+
+export default function withRoot(Component) {
+  return function WithRoot(props) {
+    return (
+      <MuiThemeProvider theme={ theme }>
+        <CssBaseline />
+        <Component {...props} />
+      </MuiThemeProvider>
+    )
+  }
+}

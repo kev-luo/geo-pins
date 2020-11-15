@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { GraphQLClient } from 'graphql-request';
 import { GoogleLogin } from 'react-google-login';
 import { withStyles } from '@material-ui/core/styles';
+
+import UserContext from '../../utils/UserContext';
 
 const styles = {
   root: {
@@ -14,6 +16,7 @@ const styles = {
 }
 
 export default withStyles(styles)(function Login({ classes }) {
+  const { dispatch } = useContext(UserContext);
   // this authenticates user on the client. after this we need to authenticate them on the backend (ie on our server). This involves sending id_token to our server, checking to see if it's valid, getting the user's google info there, and when we execute a query from the client asking for the current user's information we'll send it back from the server. upon which we'll store the info in our app and redirect them t our home component.
   const onSuccess = async (googleUser) => {
     // returns object with logged in user info
@@ -30,7 +33,9 @@ export default withStyles(styles)(function Login({ classes }) {
     // make a request to execute a query/mutation. this returns a promise
     // asking for current user data after we successfully login, and pass through the idToken from the login
     const data = await client.request(ME_QUERY)
-    console.log(data);
+    // console.log(data);
+
+    dispatch({ type: "LOGIN_USER", payload: data.me })
   }
 
   return (

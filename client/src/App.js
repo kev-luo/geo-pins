@@ -10,12 +10,16 @@ function App() {
   const initialState = useContext(UserContext);
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  console.log(state);
+
   return (
     <Router>
-      <Switch>
-        <Route exact path='/' component={ Home } />
-        <Route exact path='/login' component={ Splash } />
-      </Switch>
+      <UserContext.Provider value={{ state, dispatch }}>
+        <Switch>
+          <Route exact path='/' component={ Home } />
+          <Route exact path='/login' component={ Splash } />
+        </Switch>
+      </UserContext.Provider>
     </Router>
   );
 }

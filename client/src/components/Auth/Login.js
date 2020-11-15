@@ -2,8 +2,10 @@ import React, { useContext } from 'react'
 import { GraphQLClient } from 'graphql-request';
 import { GoogleLogin } from 'react-google-login';
 import { withStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
 
 import UserContext from '../../utils/UserContext';
+import { ME_QUERY } from '../../utils/graphql/queries';
 
 const styles = {
   root: {
@@ -24,37 +26,49 @@ export default withStyles(styles)(function Login({ classes }) {
     // console.log(googleUser);
     // getAuthResponse returns an object from which we can grab the id_token
     // console.log(googleUser.getAuthResponse())
-    const idToken = googleUser.getAuthResponse().id_token;
-    // console.log(idToken);
-    const client = new GraphQLClient('http://localhost:4000/graphql', {
-      // config object
-      headers: { authorization: idToken }
-    })
-    // make a request to execute a query/mutation. this returns a promise
-    // asking for current user data after we successfully login, and pass through the idToken from the login
-    const data = await client.request(ME_QUERY)
-    // console.log(data);
+    try {
+      const idToken = googleUser.getAuthResponse().id_token;
+      // console.log(idToken);
+      const client = new GraphQLClient('http://localhost:4000/graphql', {
+        // config object
+        headers: { authorization: idToken }
+      })
+      // make a request to execute a query/mutation. this returns a promise
+      // asking for current user data after we successfully login, and pass through the idToken from the login
+      const data = await client.request(ME_QUERY)
+      // console.log(data);
 
-    dispatch({ type: "LOGIN_USER", payload: data.me })
+      dispatch({ type: "LOGIN_USER", payload: data.me })
+      // isSignedIn() returns a true/false value depending on if the user is signed in
+      dispatch({ type: "IS_LOGGED_IN", payload: googleUser.isSignedIn() })
+    } catch(err) {
+      onFailure(err);
+    }
+  }
+
+  const onFailure = err => {
+    console.error("Error logging in", err);
   }
 
   return (
-    // isSignedIn remembers if a user previously signed in
-    <GoogleLogin 
-      clientId={process.env.REACT_APP_OATH_CLIENT_ID} 
-      onSuccess={onSuccess} 
-      isSignedIn={true}
-    />
+    <div className={classes.root}>
+      <Typography
+        component="h1"
+        variant="h3"
+        gutterBottom
+        noWrap
+        style={{ color: 'rgb(66, 133, 244)' }}  
+      >
+        Welcome
+      </Typography>
+      {/* isSignedIn remembers if a user previously signed in */}
+      <GoogleLogin 
+        clientId={process.env.REACT_APP_OATH_CLIENT_ID} 
+        onSuccess={onSuccess}
+        onFailure={onFailure} 
+        isSignedIn={true}
+        theme="dark"
+      />
+    </div>
   )
 })
-
-const ME_QUERY = `
-  {
-    me{
-      _id
-      name
-      email
-      picture
-    }
-  }
-`

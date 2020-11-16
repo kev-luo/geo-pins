@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactMapGL, { NavigationControl, Marker } from 'react-map-gl';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
 
 import PinIcon from './PinIcon';
+import UserContext from '../utils/UserContext';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -45,6 +46,7 @@ const initialViewport = {
 
 export default function Map() {
   const classes = useStyles();
+  const { state, dispatch } = useContext(UserContext);
   // be able to change viewport by keeping track of viewport in state
   const [viewport, setViewport] = useState(initialViewport);
   // pin user position
@@ -65,6 +67,24 @@ export default function Map() {
     }
   }
 
+  const handleMapClick = event => {
+    console.log(event);
+    const { lngLat, leftButton } = event;
+
+    if(!leftButton) {
+      return;
+    }
+    if(!state.draft) {
+      dispatch({ type: "CREATE_DRAFT" })
+    }
+
+    const [longitude, latitude] = lngLat
+    dispatch({ 
+      type: "UPDATE_DRAFT_LOCATION", 
+      payload: { longitude, latitude }
+    })
+  }
+
   return (
     <div className={classes.root}>
       <ReactMapGL
@@ -73,6 +93,7 @@ export default function Map() {
         mapStyle='mapbox://styles/mapbox/streets-v9'
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
         onViewportChange={newViewport => setViewport(newViewport)}
+        onClick={handleMapClick}
         {...viewport}
       >
       {/* navigation control */}

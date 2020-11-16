@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMapGL from 'react-map-gl';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
@@ -34,11 +35,23 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
+const viewport = {
+  latitude: 37.7577,
+  longitude: -122.4376,
+  zoom: 13
+}
+
 export default function Map() {
   const classes = useStyles();
   return (
-    <div>
-      
+    <div className={classes.root}>
+      <ReactMapGL
+        width='100vw'
+        height='calc(100vh - 64px)'
+        mapStyle='mapbox://styles/mapbox/streets-v9'
+        mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+        {...viewport}
+      />
     </div>
   )
 }

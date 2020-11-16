@@ -4,6 +4,7 @@ import { AppBar, Toolbar, Typography } from '@material-ui/core';
 import MapIcon from '@material-ui/icons/Map';
 
 import UserContext from '../utils/UserContext';
+import Signout from './Signout';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +66,7 @@ const Header = () => {
               </Typography>
             </div>
           )}
+          <Signout />
         </Toolbar>
       </AppBar>
     </div>

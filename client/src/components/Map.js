@@ -113,6 +113,17 @@ export default function Map() {
         <PinIcon size={40} color="red"/>
         </Marker>
       )}
+      {/* draft pin */}
+      {state.draft && (
+        <Marker
+          latitude={state.draft.latitude}
+          longitude={state.draft.longitude}
+          offsetLeft={-19}
+          offsetTop={-37}
+        >
+        <PinIcon size={40} color="hotpink"/>
+        </Marker>
+      )}
       </ReactMapGL>
     </div>
   )

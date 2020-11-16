@@ -11,8 +11,6 @@ function App() {
   const initialState = useContext(UserContext);
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  console.log(state);
-
   return (
     <Router>
       <UserContext.Provider value={{ state, dispatch }}>

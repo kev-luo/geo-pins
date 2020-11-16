@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactMapGL from 'react-map-gl';
+import React, { useState } from 'react';
+import ReactMapGL, { NavigationControl } from 'react-map-gl';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
@@ -35,7 +35,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const viewport = {
+const initialViewport = {
   latitude: 37.7577,
   longitude: -122.4376,
   zoom: 13
@@ -43,6 +43,9 @@ const viewport = {
 
 export default function Map() {
   const classes = useStyles();
+  // be able to change viewport by keeping track of viewport in state
+  const [viewport, setViewport] = useState(initialViewport);
+
   return (
     <div className={classes.root}>
       <ReactMapGL
@@ -50,8 +53,16 @@ export default function Map() {
         height='calc(100vh - 64px)'
         mapStyle='mapbox://styles/mapbox/streets-v9'
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+        onViewportChange={newViewport => setViewport(newViewport)}
         {...viewport}
-      />
+      >
+      {/* navigation control */}
+      <div className={classes.navigationControl}>
+        <NavigationControl
+          onViewportChange={newViewport => setViewport(newViewport)}
+        />
+      </div>
+      </ReactMapGL>
     </div>
   )
 }

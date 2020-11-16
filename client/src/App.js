@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Splash from './pages/Splash';
 import UserContext from './utils/UserContext';
 import reducer from './utils/reducer';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 function App() {
   const initialState = useContext(UserContext);
@@ -16,7 +17,7 @@ function App() {
     <Router>
       <UserContext.Provider value={{ state, dispatch }}>
         <Switch>
-          <Route exact path='/' component={ Home } />
+          <ProtectedRoute exact path='/' component={ Home } />
           <Route exact path='/login' component={ Splash } />
         </Switch>
       </UserContext.Provider>

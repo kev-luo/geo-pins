@@ -4,8 +4,8 @@ import { GoogleLogin } from 'react-google-login';
 import { withStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 
-import UserContext from '../../utils/UserContext';
-import { ME_QUERY } from '../../utils/graphql/queries';
+import UserContext from '../utils/UserContext';
+import { ME_QUERY } from '../utils/graphql/queries';
 
 const styles = {
   root: {
@@ -17,7 +17,7 @@ const styles = {
   }
 }
 
-export default withStyles(styles)(function Login({ classes }) {
+function Login({ classes }) {
   const { dispatch } = useContext(UserContext);
   // this authenticates user on the client. after this we need to authenticate them on the backend (ie on our server). This involves sending id_token to our server, checking to see if it's valid, getting the user's google info there, and when we execute a query from the client asking for the current user's information we'll send it back from the server. upon which we'll store the info in our app and redirect them t our home component.
   const onSuccess = async (googleUser) => {
@@ -67,8 +67,11 @@ export default withStyles(styles)(function Login({ classes }) {
         onSuccess={onSuccess}
         onFailure={onFailure} 
         isSignedIn={true}
+        buttonText="Login with Google"
         theme="dark"
       />
     </div>
   )
-})
+}
+
+export default withStyles(styles)(Login)

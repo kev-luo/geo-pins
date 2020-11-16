@@ -8,7 +8,7 @@ export default function ProtectedRoute({ component: Component, ...rest }) {
 
   return (
     <Route 
-      render={props => state.isAuth ? <Component {...props} /> :  <Redirect to="/login" />} 
+      render={props => !state.isAuth ? <Redirect to="/login" /> : <Component {...props} /> } 
       {...rest} 
     />
   )

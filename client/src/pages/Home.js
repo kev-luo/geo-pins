@@ -1,11 +1,15 @@
 import React from 'react'
+import { ThemeProvider } from '@material-ui/core/styles';
+import CssBseline from '@material-ui/core/CssBaseline';
+import theme from '../theme';
 
-import withRoot from '../hoc/withRoot';
+import Header from '../components/Header';
 
-export default withRoot(function Home() {
-  return (
-    <div>
-      Hello
-    </div>
-  )
-})
+const Home = () => (
+  <ThemeProvider theme={ theme }>
+    <CssBseline />
+    <Header />
+  </ThemeProvider>
+)
+
+export default Home

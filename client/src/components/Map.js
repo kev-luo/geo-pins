@@ -125,6 +125,7 @@ export default function Map() {
         </Marker>
       )}
       </ReactMapGL>
+      {/* blog area to add pin content */}
     </div>
   )
 }

@@ -11,7 +11,7 @@ const useStyles = makeStyles((themes) => ({
     justifyContent: "center",
   },
   icon: {
-    margin: themes.spacing.unit,
+    margin: themes.spacing(1),
     fontSize: "80px",
   },
 }));

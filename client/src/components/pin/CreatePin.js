@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Typography, TextField } from '@material-ui/core';
 import LandscapeIcon from '@material-ui/icons/Landscape';
@@ -15,11 +16,11 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    paddingBottom: theme.spacing.unit,
+    paddingBottom: theme.spacing(1),
   },
   contentField: { // this makes the text field wider
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
     width: '95%',
   },
   input: { // this hides the input field where you add a photo
@@ -31,20 +32,20 @@ const useStyles = makeStyles(theme => ({
   },
   iconLarge: {
     fontSize: 40,
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing(1)
   },
   leftIcon: {
     fontSize: 20,
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
   rightIcon: {
     fontSize: 20,
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing(1)
   },
   button: { // spreads out the form a bit
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
     marginLeft: 0,
   }
 }))
@@ -64,15 +65,28 @@ export default function CreatePin() {
     })
   }
 
+  const handleImageUpload = async() => {
+    const data = new FormData(); // info about image we want to upload
+    data.append('file', image);
+    data.append('upload_preset', 'geopins') // geopins is the name of our upload preset we set up on their website
+    data.append('cloud_name', 'dvpfe3cch') // dvpfe3cch is our username on cloudinary
+    const response = await axios.post(
+      "https://api.cloudinary.com/v1_1/dvpfe3cch/image/upload",
+      data
+    )
+    return response.data.url
+  }
+
   const handleDelete = () => {
     setText(initialState);
     setImage('');
     dispatch({ type: 'DELETE_DRAFT'})
   }
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({text, image});
+    const imageUpload = await handleImageUpload();
+    console.log({imageUpload});
   }
 
   return (

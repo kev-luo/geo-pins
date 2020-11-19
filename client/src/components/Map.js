@@ -6,6 +6,7 @@ import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
 
 import PinIcon from './PinIcon';
 import UserContext from '../utils/UserContext';
+import Blog from './Blog';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -126,6 +127,7 @@ export default function Map() {
       )}
       </ReactMapGL>
       {/* blog area to add pin content */}
+      <Blog />
     </div>
   )
 }

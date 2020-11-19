@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Typography, TextField } from '@material-ui/core';
 import LandscapeIcon from '@material-ui/icons/Landscape';
@@ -6,6 +6,8 @@ import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import ClearIcon from '@material-ui/icons/Clear';
 import SaveIcon from '@material-ui/icons/Save';
 import PhotoOutlinedIcon from '@material-ui/icons/PhotoOutlined';
+
+import UserContext from '../../utils/UserContext';
 
 const useStyles = makeStyles(theme => ({
   form: { // this centers the form vertically
@@ -40,8 +42,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing.unit
   },
   button: { // spreads out the form a bit
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
     marginRight: theme.spacing.unit,
     marginLeft: 0,
   }
@@ -49,10 +51,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function CreatePin() {
   const classes = useStyles();
-  const [text, setText] = useState({
-    title: '',
-    content: '',
-  })
+  const { dispatch } = useContext(UserContext);
+  const initialState = { title: '', content: '' }
+  const [text, setText] = useState(initialState)
   const [image, setImage] = useState('');
 
   const handleTextChange = e => {
@@ -61,6 +62,12 @@ export default function CreatePin() {
       ...text,
       [name]: value
     })
+  }
+
+  const handleDelete = () => {
+    setText(initialState);
+    setImage('');
+    dispatch({ type: 'DELETE_DRAFT'})
   }
 
   const handleSubmit = e => {
@@ -119,6 +126,7 @@ export default function CreatePin() {
           className={classes.button}
           variant='contained'
           color='primary'
+          onClick={handleDelete}
         >
           <ClearIcon className={classes.leftIcon} />
           Discard

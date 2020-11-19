@@ -5,6 +5,7 @@ import LandscapeIcon from '@material-ui/icons/Landscape';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import ClearIcon from '@material-ui/icons/Clear';
 import SaveIcon from '@material-ui/icons/Save';
+import PhotoOutlinedIcon from '@material-ui/icons/PhotoOutlined';
 
 const useStyles = makeStyles(theme => ({
   form: { // this centers the form vertically
@@ -62,8 +63,13 @@ export default function CreatePin() {
     })
   }
 
+  const handleSubmit = e => {
+    e.preventDefault();
+    console.log({text, image});
+  }
+
   return (
-    <form className={classes.form}>
+    <form className={classes.form} onSubmit={handleSubmit}>
       <Typography
         className={classes.alignCenter}
         component="h2"
@@ -91,7 +97,9 @@ export default function CreatePin() {
             component='span'
             size='small'
             className={classes.button}
-          ><AddAPhotoIcon /></Button>
+          >
+          {image ? <PhotoOutlinedIcon /> : <AddAPhotoIcon />}
+          </Button>
         </label>
       </div>
       <div className={classes.contentField}>
@@ -120,6 +128,7 @@ export default function CreatePin() {
           className={classes.button}
           variant='contained'
           color='secondary'
+          disabled={!text.title || !text.content || !image}
         >
           Submit
           <SaveIcon className={classes.rightIcon} />

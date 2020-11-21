@@ -6,6 +6,9 @@ import FaceIcon from "@material-ui/icons/Face";
 import UserContext from "../../utils/UserContext";
 import { format } from 'date-fns';
 
+import Comments from '../comment/Comments';
+import CreateComment from '../comment/CreateComment';
+
 export default function PinContent() {
   const classes = useStyles();
   const { state } = useContext(UserContext);
@@ -34,6 +37,9 @@ export default function PinContent() {
         {format(Number(createdAt), "MMM do, yyyy")}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>{content}</Typography>
+      {/* pin comments */}
+      <CreateComment />
+      <Comments comments={comments}/>
     </div>
   );
 }

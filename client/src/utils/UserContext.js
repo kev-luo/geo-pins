@@ -5,6 +5,7 @@ const UserContext = React.createContext({
   isAuth: false,
   // draft will store coords of a placed pin
   draft: null,
+  pins: [],
 })
 
 export default UserContext;

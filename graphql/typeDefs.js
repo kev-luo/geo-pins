@@ -52,6 +52,8 @@ module.exports = gql`
     # }
   type Query {
     me: User
+    # require that each pin in the array is non-null. no ! outside the array because we might not have any pins inside the array so we want to return an empty array
+    getPins: [Pin!]
   }
 
   type Mutation {

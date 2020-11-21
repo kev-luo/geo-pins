@@ -4,40 +4,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Button, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
 
+import { useClient } from '../utils/graphQlClient';
+import { GET_PINS_QUERY } from '../utils/graphql/queries';
 import PinIcon from './PinIcon';
 import UserContext from '../utils/UserContext';
 import Blog from './Blog';
-
-const useStyles = makeStyles(() => ({
-  root: {
-    display: 'flex'
-  },
-  rootMobile: {
-    display: 'flex',
-    flexDirection: 'column-reverse'
-  },
-  navigationControl: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    margin: '1em'
-  },
-  deleteIcon: {
-    color: 'red'
-  },
-  popupImage: {
-    padding: '0.4em',
-    height: 200,
-    width: 200,
-    objectFit: 'cover'
-  },
-  popupTab: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column'
-  }
-}))
 
 const initialViewport = {
   latitude: 37.7577,
@@ -47,15 +18,20 @@ const initialViewport = {
 
 export default function Map() {
   const classes = useStyles();
+  const client = useClient();
   const { state, dispatch } = useContext(UserContext);
+  useEffect(() => {
+    getPins();
+  }, [])
   // be able to change viewport by keeping track of viewport in state
   const [viewport, setViewport] = useState(initialViewport);
   // pin user position
   const [userPosition, setUserPosition] = useState(null);
 
   useEffect(() => {
-    getUserPosition()
+    getUserPosition();
   }, [])
+
 
   const getUserPosition = () => {
     if('geolocation' in navigator) {
@@ -66,6 +42,12 @@ export default function Map() {
         setUserPosition({ latitude, longitude })
       })
     }
+  }
+
+  const getPins = async() => {
+    const { getPins } = await client.request(GET_PINS_QUERY)
+    dispatch({ type: "GET_PINS", payload: getPins})
+    console.log(getPins);
   }
 
   const handleMapClick = event => {
@@ -125,9 +107,54 @@ export default function Map() {
         <PinIcon size={40} color="hotpink"/>
         </Marker>
       )}
+      {/* created pins */}
+      {state.pins.map(pin => {
+        return(
+          <Marker
+            key={pin._id}
+            latitude={pin.latitude}
+            longitude={pin.longitude}
+            offsetLeft={-19}
+            offsetTop={-37}
+          >
+            <PinIcon size={40} color="darkblue" />
+          </Marker>
+        )
+      })}
       </ReactMapGL>
       {/* blog area to add pin content */}
       <Blog />
     </div>
   )
 }
+
+const useStyles = makeStyles(() => ({
+  root: {
+    display: 'flex'
+  },
+  rootMobile: {
+    display: 'flex',
+    flexDirection: 'column-reverse'
+  },
+  navigationControl: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    margin: '1em'
+  },
+  deleteIcon: {
+    color: 'red'
+  },
+  popupImage: {
+    padding: '0.4em',
+    height: 200,
+    width: 200,
+    objectFit: 'cover'
+  },
+  popupTab: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column'
+  }
+}))

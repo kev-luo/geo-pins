@@ -9,6 +9,12 @@ const authenticated = next => (root, args, context, info) => {
 }
 
 module.exports = {
+  Query: {
+    getPins: async (root, args, context) => {
+      const pins = await Pin.find({}).populate('author').populate('comments.author');
+      return pins
+    }
+  },
   Mutation: {
     createPin: authenticated(async (root, args, context) => {
       const newPin = await new Pin({

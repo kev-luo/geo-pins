@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+import { GraphQLClient } from 'graphql-request';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Typography, TextField } from '@material-ui/core';
@@ -9,6 +10,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import PhotoOutlinedIcon from '@material-ui/icons/PhotoOutlined';
 
 import UserContext from '../../utils/UserContext';
+import { CREATE_PIN_MUTATION } from '../../utils/graphql/mutations';
 
 const useStyles = makeStyles(theme => ({
   form: { // this centers the form vertically
@@ -52,10 +54,12 @@ const useStyles = makeStyles(theme => ({
 
 export default function CreatePin() {
   const classes = useStyles();
-  const { dispatch } = useContext(UserContext);
+  const { state, dispatch } = useContext(UserContext);
   const initialState = { title: '', content: '' }
   const [text, setText] = useState(initialState)
   const [image, setImage] = useState('');
+  // disable button when mutation is in flight so it can't be submitted multiple times
+  const [submitting, setSubmitting] = useState(false);
 
   const handleTextChange = e => {
     const { name, value } = e.target;
@@ -66,7 +70,7 @@ export default function CreatePin() {
   }
 
   const handleImageUpload = async() => {
-    console.log(image);
+    // console.log(image);
     const data = new FormData(); // info about image we want to upload
     data.append('file', image);
     data.append('upload_preset', 'geopins') // geopins is the name of our upload preset we set up on their website
@@ -85,9 +89,25 @@ export default function CreatePin() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const imageUpload = await handleImageUpload();
-    console.log({imageUpload});
+    try {
+      e.preventDefault();
+      setSubmitting(true)
+      const idToken = window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
+      const url = await handleImageUpload();
+      // console.log(url);
+      const client = new GraphQLClient('http://localhost:4000/graphql', {
+        headers: { authorization: idToken }
+      })
+      const { latitude, longitude } = state.draft
+      const { title, content } = text;
+      const variables = { title, image: url, content, latitude, longitude }
+      const { createPin } = await client.request(CREATE_PIN_MUTATION, variables)
+      console.log("pin created", createPin)
+      handleDelete();
+    } catch(err) {
+      setSubmitting(false)
+      console.error("error creating pin", err);
+    }
   }
 
   return (
@@ -151,7 +171,7 @@ export default function CreatePin() {
           className={classes.button}
           variant='contained'
           color='secondary'
-          disabled={!text.title || !text.content || !image}
+          disabled={!text.title || !text.content || !image || submitting}
         >
           Submit
           <SaveIcon className={classes.rightIcon} />

@@ -4,6 +4,7 @@ import { Typography } from "@material-ui/core";
 import AccessTime from "@material-ui/icons/AccessTime";
 import FaceIcon from "@material-ui/icons/Face";
 import UserContext from "../../utils/UserContext";
+import { format } from 'date-fns';
 
 export default function PinContent() {
   const classes = useStyles();
@@ -30,7 +31,7 @@ export default function PinContent() {
         gutterBottom
       >
         <AccessTime classname={classes.icon} />
-        {createdAt}
+        {format(Number(createdAt), "MMM do, yyyy")}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>{content}</Typography>
     </div>
@@ -38,7 +39,18 @@ export default function PinContent() {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
-  text: {},
-  icon: {},
+  root: {
+    padding: '1em 0.5em',
+    textAlign: 'center',
+    width: '100%',
+  },
+  icon: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
+  text: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 }));

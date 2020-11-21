@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ReactMapGL, { NavigationControl, Marker } from 'react-map-gl';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Typography } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
-
+import {differenceInMinutes} from 'date-fns'
 import { useClient } from '../utils/graphQlClient';
 import { GET_PINS_QUERY } from '../utils/graphql/queries';
 import PinIcon from './PinIcon';
@@ -68,6 +66,11 @@ export default function Map() {
     })
   }
 
+  const highlightNewPin = pin => {
+    const isNewPin = differenceInMinutes(Date.now(), Number(pin.createdAt)) <= 30
+    return isNewPin ? "limegreen" : "darkblue"
+  }
+
   return (
     <div className={classes.root}>
       <ReactMapGL
@@ -117,7 +120,7 @@ export default function Map() {
             offsetLeft={-19}
             offsetTop={-37}
           >
-            <PinIcon size={40} color="darkblue" />
+            <PinIcon size={40} color={highlightNewPin(pin)} />
           </Marker>
         )
       })}

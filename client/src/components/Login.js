@@ -50,6 +50,7 @@ function Login() {
 
   const onFailure = err => {
     console.error("Error logging in", err);
+    dispatch({ type: "IS_LOGGED_IN", payload: false })
   }
 
   return (

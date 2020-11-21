@@ -1,6 +1,11 @@
 const Pin = require("../../models/Pin");
 const User = require("../../models/User");
-const { AuthenticationError } = require("apollo-server");
+const { AuthenticationError, PubSub } = require("apollo-server");
+
+const pubsub = new PubSub();
+const PIN_ADDED = "PIN_ADDED";
+const PIN_DELETED = "PIN_DELETED";
+const PIN_UPDATED = "PIN_UPDATED";
 
 const authenticated = (next) => (root, args, context, info) => {
   if (!context.currentUser) {
@@ -25,10 +30,15 @@ module.exports = {
         author: context.currentUser._id,
       }).save();
       const pinAdded = await Pin.populate(newPin, "author");
+      // to publish the data changes from createPin, we need access to the return value of the createPin resolver
+      // now whenever we create a new pin (pinAdded variable), it will be published with our PIN_ADDED subscription
+      // the mutation resolvers publish the data, and the front end calls the subscription query to subscribe to the published data
+      pubsub.publish(PIN_ADDED, { pinAdded });
       return pinAdded;
     }),
     deletePin: authenticated(async (root, args, context) => {
       const pinDeleted = await Pin.findOneAndDelete({ _id: args.pinId }).exec();
+      pubsub.publish(PIN_DELETED, { pinDeleted });
       return pinDeleted;
     }),
     createComment: authenticated(async (root, args, context) => {
@@ -40,7 +50,20 @@ module.exports = {
       )
         .populate("author")
         .populate("comments.author");
+      pubsub.publish(PIN_UPDATED, { pinUpdated });
       return pinUpdated;
     }),
+  },
+  Subscription: {
+    // resolver for pinAdded
+    pinAdded: {
+      subscribe: () => pubsub.asyncIterator(PIN_ADDED),
+    },
+    pinDeleted: {
+      subscribe: () => pubsub.asyncIterator(PIN_DELETED),
+    },
+    pinUpdated: {
+      subscribe: () => pubsub.asyncIterator(PIN_UPDATED),
+    },
   },
 };

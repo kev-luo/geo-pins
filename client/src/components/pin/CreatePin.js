@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react'
-import { GraphQLClient } from 'graphql-request';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Typography, TextField } from '@material-ui/core';
@@ -11,6 +10,7 @@ import PhotoOutlinedIcon from '@material-ui/icons/PhotoOutlined';
 
 import UserContext from '../../utils/UserContext';
 import { CREATE_PIN_MUTATION } from '../../utils/graphql/mutations';
+import { useClient } from '../../utils/graphQlClient';
 
 const useStyles = makeStyles(theme => ({
   form: { // this centers the form vertically
@@ -54,6 +54,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function CreatePin() {
   const classes = useStyles();
+  const client = useClient();
   const { state, dispatch } = useContext(UserContext);
   const initialState = { title: '', content: '' }
   const [text, setText] = useState(initialState)
@@ -92,12 +93,8 @@ export default function CreatePin() {
     try {
       e.preventDefault();
       setSubmitting(true)
-      const idToken = window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
       const url = await handleImageUpload();
       // console.log(url);
-      const client = new GraphQLClient('http://localhost:4000/graphql', {
-        headers: { authorization: idToken }
-      })
       const { latitude, longitude } = state.draft
       const { title, content } = text;
       const variables = { title, image: url, content, latitude, longitude }

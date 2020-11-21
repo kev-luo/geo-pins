@@ -6,6 +6,7 @@ import { Typography } from '@material-ui/core';
 
 import UserContext from '../utils/UserContext';
 import { ME_QUERY } from '../utils/graphql/queries';
+import {BASE_URL} from '../utils/graphQlClient';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -30,7 +31,7 @@ function Login() {
     try {
       const idToken = googleUser.getAuthResponse().id_token;
       // console.log(idToken);
-      const client = new GraphQLClient('http://localhost:4000/graphql', {
+      const client = new GraphQLClient(BASE_URL, {
         // config object
         headers: { authorization: idToken }
       })

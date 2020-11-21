@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ReactMapGL, { NavigationControl, Marker, Popup } from 'react-map-gl';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core'
+import { Typography, Button } from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete';
 import {differenceInMinutes} from 'date-fns'
 import { useClient } from '../utils/graphQlClient';
 import { GET_PINS_QUERY } from '../utils/graphql/queries';
@@ -77,6 +78,8 @@ export default function Map() {
     setPopup(pin);
     dispatch({type: "SET_PIN", payload: pin });
   }
+
+  const isAuthUser = () => state.currentUser._id === popup.author._id;
 
   return (
     <div className={classes.root}>
@@ -154,6 +157,11 @@ export default function Map() {
             <Typography>
               {popup.latitude.toFixed(6)}, {popup.longitude.toFixed(6)}
             </Typography>
+            {isAuthUser() && (
+              <Button>
+                <DeleteIcon className={classes.deleteIcon}/>
+              </Button>
+            )}
           </div>
         </Popup>
       )}

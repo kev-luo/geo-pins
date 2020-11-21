@@ -15,7 +15,6 @@ const findOrCreateUser = async(token) => {
 
 const verifyAuthToken = async(token) => {
   try {
-    console.log(token)
     const ticket = await client.verifyIdToken({
       idToken: token,
       audience: process.env.OAUTH_CLIENT_ID

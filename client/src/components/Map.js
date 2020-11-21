@@ -6,6 +6,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import {differenceInMinutes} from 'date-fns'
 import { useClient } from '../utils/graphQlClient';
 import { GET_PINS_QUERY } from '../utils/graphql/queries';
+import { DELETE_PIN_MUTATION } from '../utils/graphql/mutations';
 import PinIcon from './PinIcon';
 import UserContext from '../utils/UserContext';
 import Blog from './Blog';
@@ -52,7 +53,6 @@ export default function Map() {
   }
 
   const handleMapClick = event => {
-    console.log(event);
     const { lngLat, leftButton } = event;
 
     if(!leftButton) {
@@ -80,6 +80,14 @@ export default function Map() {
   }
 
   const isAuthUser = () => state.currentUser._id === popup.author._id;
+
+  const handleDeletePin = async(pin) => {
+    const variables = { pinId: pin._id }
+    const { deletePin } = await client.request(DELETE_PIN_MUTATION, variables)
+    dispatch({type: "DELETE_PIN", payload: deletePin})
+    setPopup(null)
+    getPins();
+  }
 
   return (
     <div className={classes.root}>
@@ -158,7 +166,7 @@ export default function Map() {
               {popup.latitude.toFixed(6)}, {popup.longitude.toFixed(6)}
             </Typography>
             {isAuthUser() && (
-              <Button>
+              <Button onClick={() => handleDeletePin(popup)}>
                 <DeleteIcon className={classes.deleteIcon}/>
               </Button>
             )}

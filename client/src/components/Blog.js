@@ -5,6 +5,7 @@ import { Paper } from '@material-ui/core';
 import UserContext from '../utils/UserContext';
 import NoContent from './pin/NoContent';
 import CreatePin from './pin/CreatePin';
+import PinContent from './pin/PinContent';
 
 const useStyles = makeStyles(themes => ({
   root: {
@@ -26,13 +27,15 @@ const useStyles = makeStyles(themes => ({
 export default function Blog() {
   const classes = useStyles();
   const { state } = useContext(UserContext);
-  const { draft } = state;
+  const { draft, currentPin } = state;
 
   let BlogContent;
-  if(!draft) {
+  if(!draft && !currentPin) {
     BlogContent = NoContent;
-  } else if(draft) {
+  } else if(draft && !currentPin) {
     BlogContent = CreatePin;
+  } else if(!draft && currentPin) {
+    BlogContent = PinContent;
   }
 
   return (

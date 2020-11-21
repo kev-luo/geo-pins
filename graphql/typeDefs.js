@@ -31,6 +31,14 @@ module.exports = gql`
     author: User
   }
 
+  input CreatePinInput {
+    title: String
+    image: String
+    content: String
+    latitude: Float
+    longitude: Float
+  }
+
   # in order to add functionality to our API we need to add ROOT types: Query/Mutation/Subscription
   # root types define our entry points for our API. they define the shape of our queries and mutations that will be accepted by the server. Note that while root type definitions allow us to send queries and mutations to our server, they won't be executed until we write our resolvers.
   # defining the Query root type with the 'me' field allows us to write the following query:
@@ -44,5 +52,9 @@ module.exports = gql`
     # }
   type Query {
     me: User
+  }
+
+  type Mutation {
+    createPin(input: CreatePinInput!): Pin!
   }
 `

@@ -66,6 +66,7 @@ export default function CreatePin() {
   }
 
   const handleImageUpload = async() => {
+    console.log(image);
     const data = new FormData(); // info about image we want to upload
     data.append('file', image);
     data.append('upload_preset', 'geopins') // geopins is the name of our upload preset we set up on their website

@@ -12,46 +12,6 @@ import UserContext from '../../utils/UserContext';
 import { CREATE_PIN_MUTATION } from '../../utils/graphql/mutations';
 import { useClient } from '../../utils/graphQlClient';
 
-const useStyles = makeStyles(theme => ({
-  form: { // this centers the form vertically
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    paddingBottom: theme.spacing(1),
-  },
-  contentField: { // this makes the text field wider
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: '95%',
-  },
-  input: { // this hides the input field where you add a photo
-    display: 'none',
-  },
-  alignCenter: { // makes the title a little less spread out
-    display: 'flex',
-    alignItems: 'center',
-  },
-  iconLarge: {
-    fontSize: 40,
-    marginRight: theme.spacing(1)
-  },
-  leftIcon: {
-    fontSize: 20,
-    marginRight: theme.spacing(1),
-  },
-  rightIcon: {
-    fontSize: 20,
-    marginRight: theme.spacing(1)
-  },
-  button: { // spreads out the form a bit
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-    marginRight: theme.spacing(1),
-    marginLeft: 0,
-  }
-}))
-
 export default function CreatePin() {
   const classes = useStyles();
   const client = useClient();
@@ -98,9 +58,12 @@ export default function CreatePin() {
       const { latitude, longitude } = state.draft
       const { title, content } = text;
       const variables = { title, image: url, content, latitude, longitude }
-      const { createPin } = await client.request(CREATE_PIN_MUTATION, variables)
-      console.log("pin created", createPin)
-      dispatch({type: "CREATE_PIN", payload: createPin })
+      // NOTE: we don't need to get back a value from this mutation anymore since we're subscribing to published new pins in our Map component
+      // const { createPin } = 
+      await client.request(CREATE_PIN_MUTATION, variables)
+      // NOTE: we don't need to get back a value from this mutation anymore since we're subscribing to published new pins in our Map component
+      // console.log("pin created", createPin)
+      // dispatch({type: "CREATE_PIN", payload: createPin })
       handleDelete();
     } catch(err) {
       setSubmitting(false)
@@ -178,3 +141,43 @@ export default function CreatePin() {
     </form>
   )
 }
+
+const useStyles = makeStyles(theme => ({
+  form: { // this centers the form vertically
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    paddingBottom: theme.spacing(1),
+  },
+  contentField: { // this makes the text field wider
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: '95%',
+  },
+  input: { // this hides the input field where you add a photo
+    display: 'none',
+  },
+  alignCenter: { // makes the title a little less spread out
+    display: 'flex',
+    alignItems: 'center',
+  },
+  iconLarge: {
+    fontSize: 40,
+    marginRight: theme.spacing(1)
+  },
+  leftIcon: {
+    fontSize: 20,
+    marginRight: theme.spacing(1),
+  },
+  rightIcon: {
+    fontSize: 20,
+    marginRight: theme.spacing(1)
+  },
+  button: { // spreads out the form a bit
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    marginRight: theme.spacing(1),
+    marginLeft: 0,
+  }
+}))

@@ -16,8 +16,11 @@ export default function CreateComment() {
 
   const handleSubmitComment = async() => {
     const variables = { pinId: state.currentPin._id, text: comment }
-    const { createComment } = await client.request(CREATE_COMMENT_MUTATION, variables);
-    dispatch({ type: "CREATE_COMMENT", payload: createComment })
+    // NOTE: don't need this since we're subscribing to updates to pins on map component
+    // const { createComment } = 
+    await client.request(CREATE_COMMENT_MUTATION, variables);
+    // NOTE: don't need this since we're subscribing to updates to pins on map component
+    // dispatch({ type: "CREATE_COMMENT", payload: createComment })
     setComment('');
   }
 

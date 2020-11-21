@@ -6,8 +6,8 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Typography,
 } from "@material-ui/core";
+import { formatDistanceToNow } from 'date-fns';
 
 export default function Comments({ comments }) {
   const classes = useStyles();
@@ -22,13 +22,9 @@ export default function Comments({ comments }) {
             <ListItemText
               primary={comment.text}
               secondary={
-                <Typography
-                  className={classes.inline}
-                  component="span"
-                  color="textPrimary"
-                >
-                  {comment.author.name}
-                </Typography>
+                <>
+                  {comment.author.name} | {formatDistanceToNow(Number(comment.createdAt), { addSuffix: true })}
+                </>
               }
             />
           </ListItem>
